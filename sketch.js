@@ -1,75 +1,45 @@
-var bullet,wall;
-var thickness, speed, weight;
-
-
+var ball,img,paddle;
+function preload() {
+  ballimg = loadImage('ball.png');
+  paddleimg=loadImage("paddle.png")
+}
 function setup() {
-  createCanvas(1600,400);
-  createSprite(400, 200, 50, 50);
+  createCanvas(400, 400);
+  ball=createSprite(40,200,20,20);
+  ball.addImage (ballimg); 
+  ball.velocityX=9;  
+  paddle=createSprite(350,200,20,100);
+  paddle.addImage(paddleimg)
+  
 
-  speed = random(223,321);
-  weight = random(30,52);
-  thickness = random(22,83);
-
-  bullet = createSprite(50,100,50,50);
-  wall = createSprite(1200,200,thickness,height/2);
-  wall.shapecolor =color(80,80,80);
-
-  bullet.velocityX = speed;
-
-  if(wall.x-bullet.x < (bullet.width+wall.width)/2)
-{
-bullet.velocityX=0;
-var damage= 0.5 *weight * speed * speed/ thickness* thickness* thickness;
-if  (damage > 10)
-{
-  bullet.shapecolor=color(225,0,0);
-}
-
-if (damage<10 && damage>10)
-{
-  bullet.shapecolor=color(230,230,0);
-}
-
-if (damage<10)
-{
-  bullet.shapecolor=color(0,225,0);
-}
 }
 
 function draw() {
-  background(255,255,255);  
-
-    if(hasCollided(bullet,wall))
-    {
-      bullet,velocityX =0;
-      var damage = 0.5* weight* speed* spped/(thickness* thickness* thickness);
-      
-      if(damage>10)
-      {
-        wall.shapeColor=color(255,0,0);
-
-      }
-
-
-
-      if(damage<10)
-      {
-        wall.shapeColor=color(0,255,0);
-      }
-    }
-
+  background(205,153,0);
+  
+  edges=createEdgeSprites();
+  //Bounce Off the Left Edge only
+  ball.bounceOff(edges[0]); 
+  
+  ball.bounceOff(edges[2]);
+  ball.bounceOff(edges[3]);
+  ball.bounceOff(paddle,explosion);
+  paddle.collide(edges);
+  if(keyDown(UP_ARROW))
+  {
+    paddle.y=paddle.y-20;
+  }
+  
+  if(keyDown(DOWN_ARROW))
+  {
+    paddle.y=paddle.y+20;
+  }
   drawSprites();
-}
+  
 }
 
-function hasCollided(Lbullet, Lwall)
+function explosion()
 {
-bulletRightEdge=bullet.x + bullet.width;
-wallLeftEdge=lwall.x;
-if (bulletRightEdge>=wallLeftEdge)
-{
-  return true 
+  ball.velocityY=random(-8,8);
 }
-return false;
 
-}
